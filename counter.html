@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body{
+                display:flex;
+                justify-content: center;
+                align-items: center;
+            }
+            p{
+                margin-top: 20px;
+                text-align: center;
+                font-size: 50px;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+            button{
+                color:white;
+                font-weight: bold;
+                padding: 6px 8px 6px 8px;
+                background-color: skyblue;
+                border-radius: 5px;
+                
+            }
+            .counter{
+                border: 2px solid black;
+                background: antiquewhite;
+                padding: 50px;
+                
+
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="counter">
+            <h1 style="text-align: center;font-size: 50px; margin-bottom: 0;">Counter</h1>
+            <p class="cos"></p>
+            <button onclick="increase()">Increase</button>
+            <button onclick="decrease()">Decrease</button>
+            <button onclick="reset()">Reset</button>
+        </div>
+    </body>
+    <script>
+        let count=0;
+        const n = document.querySelector('.cos');
+        function increase(){
+            count++;
+            n.innerHTML = count;
+        }
+        function decrease(){
+            count--;
+            n.innerHTML = count;
+        }
+        function reset(){
+            count=0;
+            n.innerHTML = count;
+        }
+    </script>
+</html>

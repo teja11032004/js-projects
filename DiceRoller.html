@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .container{
+                text-align: center;
+                font-size: 25px;
+                font-weight: bold;
+                font-family: Arial, Helvetica, sans-serif;
+
+            }
+            button{
+                color: white;
+                background-color: rgb(25, 120, 164);
+                border: none;
+                font-weight: bold;
+                padding: 6px;
+                border-radius: 4px;
+            }
+            .result1{
+                margin-top: 30px;
+                margin-bottom: 40px;
+            }
+            .image1{
+                display: block;
+                margin: 5px;
+            }
+            
+            
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Dice Roller</h1>
+            <label># of dice: </label>
+            <input type="number" min="1" max="6"  onkeydown="if(event.key === 'Enter'){
+                roll();
+            }">
+            <button onclick="roll()">Roll Dice</button>
+            <div class="result result1"></div>
+            <div class="images image1"></div>
+        </div>
+    </body>
+    <script>
+        function roll(){
+        const rolls = document.querySelector('input');
+        const dieres = document.querySelector('.result');
+        const dieimg = document.querySelector('.images');
+        const values = [];
+        const images=[]
+        let no = Number(rolls.value);
+        for(let i=0;i<no;i++){
+            const random = Math.floor(Math.random()*6)+1;
+            values.push(random);
+            images.push(`<img src="download (${random}).png">`);
+            
+        }
+        dieres.innerHTML = `dice: ${values.join(', ')}`;
+        dieimg.innerHTML = images.join('');
+
+        }
+    </script>
+</html>

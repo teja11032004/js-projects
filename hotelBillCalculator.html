@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hotel Bill with Room Service</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(45deg, #f3ec78, #af4261);
+      transition: background 0.3s ease;
+    }
+
+    .calculator {
+      background: #fff;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .dark-mode {
+      background-color: #1a1a1a;
+      color: #fff;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: #333;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 16px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    .room-service {
+      background: #fafafa;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .service-row input {
+      flex: 1;
+    }
+
+    .service-row input:focus {
+      border-color: #007bff;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .result {
+      background: #e9f7ef;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 18px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    .bold {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .history {
+      margin-top: 30px;
+      background: #f1f1f1;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .history button {
+      background-color: #dc3545;
+      width: auto;
+      font-size: 14px;
+    }
+
+    .history ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .history ul li {
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .history ul li span {
+      font-weight: bold;
+    }
+
+    .floating-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #007bff;
+      border: none;
+      padding: 15px;
+      border-radius: 50%;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+    }
+
+    .floating-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="calculator" id="invoice">
+  <h2>Hotel Bill with Room Service</h2>
+
+  <label>Room Type</label>
+  <select id="roomType">
+    <option value="1000">Standard - ₹1000/night</option>
+    <option value="2000">Deluxe - ₹2000/night</option>
+    <option value="3500">Suite - ₹3500/night</option>
+  </select>
+
+  <label>Nights</label>
+  <input type="number" id="nights" value="1" min="1"/>
+
+  <div class="room-service">
+    <h4>Room Service Items</h4>
+    <div id="servicesList"></div>
+    <button onclick="addServiceItem()">➕ Add Item</button>
+  </div>
+
+  <button onclick="calculateTotal()">Calculate Bill</button>
+
+  <div class="result" id="billResult">Total: ₹0</div>
+
+
+  <div class="history" id="historyContainer">
+    <h3>Previous Bills</h3>
+    <ul id="historyList"></ul>
+  </div>
+</div>
+
+
+
+<script>
+  let serviceCount = 0;
+  let savedBills = JSON.parse(localStorage.getItem('bills')) || [];
+
+  addServiceItem(); // Initialize with one service item
+
+  function toggleMode() {
+    document.body.classList.toggle('dark-mode');
+  }
+
+  function addServiceItem() {
+    serviceCount++;
+    const container = document.getElementById("servicesList");
+    const row = document.createElement("div");
+    row.className = "service-row";
+    row.innerHTML = `
+      <input type="text" placeholder="Item name" id="itemName${serviceCount}">
+      <input type="number" placeholder="Qty" min="1" id="itemQty${serviceCount}">
+      <input type="number" placeholder="Price" min="1" id="itemPrice${serviceCount}">
+    `;
+    container.appendChild(row);
+  }
+
+  function calculateTotal() {
+    const roomRate = parseInt(document.getElementById("roomType").value);
+    const nights = parseInt(document.getElementById("nights").value);
+    const roomCharge = roomRate * nights;
+
+    let serviceTotal = 0;
+    for (let i = 1; i <= serviceCount; i++) {
+      const name = document.getElementById(`itemName${i}`);
+      const qty = document.getElementById(`itemQty${i}`);
+      const price = document.getElementById(`itemPrice${i}`);
+      if (name && qty && price && name.value && qty.value && price.value) {
+        serviceTotal += parseInt(qty.value) * parseInt(price.value);
+      }
+    }
+
+    const subtotal = roomCharge + serviceTotal;
+    const gst = subtotal * 0.18;
+    const total = subtotal + gst;
+
+    const bill = {
+      roomCharge, serviceTotal, subtotal, gst, total
+    };
+
+    document.getElementById("billResult").innerHTML = `
+      <div><span class="bold">Room Charge:</span> ₹${roomCharge}</div>
+      <div><span class="bold">Room Service:</span> ₹${serviceTotal}</div>
+      <div><span class="bold">Subtotal:</span> ₹${subtotal}</div>
+      <div><span class="bold">GST (18%):</span> ₹${gst.toFixed(2)}</div>
+      <div><span class="bold">Final Total:</span> ₹${total.toFixed(2)}</div>
+    `;
+
+    savedBills.push(bill);
+    localStorage.setItem('bills', JSON.stringify(savedBills));
+    displayHistory();
+  }
+
+  function displayHistory() {
+    const historyList = document.getElementById("historyList");
+    historyList.innerHTML = '';
+    savedBills.forEach((bill, index) => {
+      const listItem = document.createElement("li");
+      listItem.innerHTML = `
+        Room: ₹${bill.roomCharge}, Service: ₹${bill.serviceTotal}, Total: ₹${bill.total.toFixed(2)}
+        <button onclick="deleteBill(${index})">Delete</button>
+      `;
+      historyList.appendChild(listItem);
+    });
+  }
+
+  function deleteBill(index) {
+    savedBills.splice(index, 1);
+    localStorage.setItem('bills', JSON.stringify(savedBills));
+    displayHistory();
+  }
+
+  displayHistory();
+</script>
+
+</body>
+</html>

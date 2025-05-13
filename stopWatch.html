@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background-color: black;
+                color: white;
+            }
+            h1{
+                font-family: arial;
+                font-size: 66px;
+            }
+            .container{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                border:3px solid;
+                padding: 25px;
+                border-radius: 30px;
+
+            }
+            .clock{
+                font-size: 90px;
+                font-weight: bold;
+                margin-bottom: 25px;
+
+            }
+            button{
+                border: none;
+                font-size: 20px;
+                margin: 5px;
+                padding: 5px 10px;
+                border-radius: 4px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 >Stop Watch</h1>
+        <div class="container">
+            <div class="clock">00:00:00:00</div>
+            <div class="control">
+                <button  onclick="start()">Start</button>
+                <button onclick="stop()">Stop</button>
+                <button onclick="reset()">Reset</button>
+            </div>
+        </div>
+       
+        <script>
+            const disp = document.querySelector('.clock');
+            let timer = null;
+            let startTime = 0;
+            let endTime = 0;
+            let state = false;
+            function start(){
+                if(!state){
+                    startTime = Date.now() - endTime;
+                    timer = setInterval(update,10);
+                    state = true;
+                   }
+
+            }
+            function stop(){
+                if(state){
+                    clearInterval(timer);
+                    endTime = Date.now() - startTime;
+                    state = false;
+                }
+
+            }
+            function reset(){
+                 clearInterval(timer);
+                 startTime = 0;
+                 endTime = 0;
+                 state = false;
+                 disp.innerHTML = "00:00:00:00";
+
+            }
+            function update(){
+                const time = Date.now();
+                end = time-startTime;
+                let hours = Math.floor(end/(1000*60*60));
+                let min = Math.floor(end/(1000*60)%60);
+                let sec = Math.floor(end/1000%60);
+                let milli = Math.floor(end%1000/10);
+                hours = String(hours).padStart(2,"0");
+                min = String(min).padStart(2,"0");
+                sec = String(sec).padStart(2,"0");
+                milli = String(milli).padStart(2,"0");
+                
+                disp.innerHTML =`${hours}:${min}:${sec}:${milli}`;
+
+
+            }
+        </script>
+    </body>
+    
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .panel{
+                width: 200px;
+                background-color: antiquewhite;
+                margin-left: 40%;
+                padding: 20px 50px;
+                border-radius: 4px;
+                box-shadow: 2px 2px 5px black;
+            }
+            h1{
+                color: rgb(44, 164, 212);
+                font-family: arial;
+            }
+            .val{
+                width:130px;
+                height: 20px;
+                text-align: center;
+                font-weight: bold;
+                font-size: 15px;
+            }
+            p{
+                font-weight: bold;
+                font-size: 14px;
+                text-align: center;
+            }
+            label{
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="panel">
+            <h1>Temparature conversion:</h1>
+            <input type="number"  value="0"  class="val input">
+            <br><br>
+            <input type="radio" id="celsius" name="temp">
+            <label for="celsius">Celsius <code>---></code> Fahrenhiet</label><br>
+            <input type="radio" id="Fahrenhiet" name="temp">
+            <label for="Fahrenhiet"> Fahrenhiet<code>---></code> Celsius</label>
+            <button style="background-color: red;color: white;border-radius: 3px;margin-left: 35%;border: none;margin-top: 20px;padding: 5px 3px;cursor: pointer;" onclick="convert()">Submit</button>
+            <p class="result"></p>
+        </div>
+    </body>
+    <script>
+            const celsius = document.getElementById('celsius');
+            const Fahrenhiet = document.getElementById('Fahrenhiet');
+            const input = document.querySelector('.input');
+            const result = document.querySelector('.result');
+            let temp;
+       
+        function convert(){
+            
+            if(celsius.checked){
+                temp = Number(input.value);
+                temp = temp *(9/5)+32;
+                result.innerHTML = temp.toFixed(1) + "°F"
+            }else if(Fahrenhiet.checked){
+                temp = Number(input.value);
+                temp = (temp-32)*(5/9);
+                result.innerHTML = temp.toFixed(1) + "°c"
+            }else{
+                result.innerHTML ="Select a Unit"
+            }
+
+        }
+
+    </script>
+</html>

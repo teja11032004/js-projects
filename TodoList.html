@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        input{
+            padding: 8px;
+            font-size: 14px;
+            text-align: left;
+        }
+        .todo-grid , .input{
+            display: grid;
+            grid-template-columns: 200px 150px 100px;
+            column-gap: 20px;
+            row-gap: 20px;
+            margin-bottom: 20px;
+            align-items: center;
+
+        }
+        .input{
+            row-gap: 30px;
+
+        }
+        button{
+           padding: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+
+
+        }
+        .delete{
+            background-color: red;
+
+        }
+        .add{
+            background-color: green;
+        }
+        </style>
+    </head>
+    <body>
+        <p>Todo List </p>
+        <div class="input">
+            <input placeholder="Todo name" class="name">
+            <input type="date" class="date">
+            <button onclick="addto()" class="add">Add</button>
+        </div>
+        
+        <div class="page"></div>
+        <script>
+             const todo = JSON.parse(localStorage.getItem('todo'))||[{
+                name:'eat food',
+                date:'2004-03-11'
+             },{
+                name:'go to sleep',
+                date:'2004-03-11'
+             }];
+             render();
+             
+             function render(){
+                let disp = '';
+             for(let i=0;i<todo.length;i++){
+                const {name,date} = todo[i];
+                let html = `<div class="todo-grid">
+                <div>${name}</div>
+                             <div>${date}</div>
+                             <button onclick = "todo.splice(${i},1);render()" class="delete">Delete</button>
+                             </div>`
+                disp+=html;
+                
+             }
+             document.querySelector('.page').innerHTML = disp;
+             
+            }
+            function addto(){
+                let inputElement = document.querySelector('.name');
+                let duedate = document.querySelector('.date')
+                const name = inputElement.value;
+                const date = duedate.value;
+                todo.push({name,date});
+               
+                console.log(todo)
+                inputElement.value = '';
+                render();
+                store();
+
+
+            }
+            function store(){
+                localStorage.setItem('todo',JSON.stringify(todo))
+            }
+
+        </script>
+    </body>
+</html>
